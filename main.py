@@ -13,7 +13,7 @@ tree = discord.app_commands.CommandTree(client)
 
 messageChannel = None
 
-MESSAGE1 = '''<@&10054727230865202257>  when are we raiding this week?
+MESSAGE1 = '''<@&1005472720865202257>  when are we raiding this week?
 🇫 riday
 🇸 aturday
 ☀️ Sunday'''
@@ -45,7 +45,7 @@ async def messageTimer(client: discord.Client):
     while not stop:
         time = datetime.datetime.now()
         print("yes")
-        if time.strftime("%H") == "4" and time.date().weekday() == 3:
+        if time.strftime("%H") == "9" and time.date().weekday() == 0:
             await asyncio.Task(sendMessages(client))
         else:
             log(f"Timed message not sent: {time.date().weekday()}")
@@ -77,6 +77,7 @@ async def endMessages(interaction: discord.Interaction):
 @client.event
 async def on_ready():
     await tree.sync(guild=GUILD)
+    await client.change_presence(activity=discord.Game("Destiny 2"))
     log(f"{client.user} logged in")
 
 client.run(environ.get("TOKEN"))
