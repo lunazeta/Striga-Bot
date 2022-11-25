@@ -79,4 +79,4 @@ async def on_ready():
     await tree.sync(guild=GUILD)
     log(f"{client.user} logged in")
 
-client.run("")
+client.run(environ.get("TOKEN"))
