@@ -1,5 +1,5 @@
 import discord
-from os import environ
+import dotenv
 import threading
 import datetime
 from time import sleep
@@ -17,7 +17,7 @@ tree = discord.app_commands.CommandTree(client)
 
 
 
-MESSAGE1 = '''<@&105472720865202257>  when are we raiding this week?
+MESSAGE1 = '''<@&1005472720865202257>  when are we raiding this week?
 🇫 riday
 🇸 aturday
 ☀️ Sunday'''
@@ -40,7 +40,7 @@ def log(s: str):
 
 async def updateStrigaStatus(client: discord.Client):
   log("Doing an update")
-  r = requests.request("GET", "https://www.bungie.net/Platform/Destiny2/1/Account/4611686018492829196/Character/0/Stats/UniqueWeapons", headers={"X-API-Key": environ.get("BUNGIETOKEN")})
+  r = requests.request("GET", "https://www.bungie.net/Platform/Destiny2/1/Account/4611686018492829196/Character/0/Stats/UniqueWeapons", headers={"X-API-Key": dotenv.get_key(".env","BUNGIETOKEN")})
   if r.ok:
     for i in r.json()["Response"]["weapons"]:
       if i["referenceId"] == 46524085:
@@ -64,10 +64,19 @@ def statusUpdate(client: discord.Client):
 
 
 
-@tree.command(name="send",
+@tree.command(name="sendhere",
               description="Sends reaction message",
               guild=GUILD)
 async def sendMessages(interaction: discord.Interaction):
+
+  ADMIN = discord.Permissions()
+  ADMIN.administrator = True
+
+  if not interaction.permissions >= ADMIN:
+    await interaction.response.send_message("insufficient permissions.")
+    return False
+  else:
+    await interaction.response.send_message("message sent.")
 
   message1 = await interaction.channel.send(MESSAGE1)
   message2 = await interaction.channel.send(MESSAGE2)
@@ -78,7 +87,7 @@ async def sendMessages(interaction: discord.Interaction):
     await message2.add_reaction(i)
 
   log("TIMED MESSAGE SENT")
-  await interaction.response.send_message("message sent.")
+  return True
 
 
 
@@ -101,4 +110,4 @@ async def on_ready():
   log(f"{client.user} logged in")
 
 
-client.run(environ.get("TOKEN"))
+client.run(dotenv.get_key(".env", "TOKEN"))
