@@ -43,7 +43,7 @@ async def osisus(interaction: discord.Interaction):
     picture = discord.File(f)
     await interaction.response.send_message(file=picture)
 
-async def playerAutocomplete(interaction: discord.Interaction, current: str) -> list[discord.app_commands.Choice[str]]:
+async def playerAutocomplete(interaction: discord.Interaction, current: str):
   print(current)
   r = requests.request("GET", "https://www.bungie.net/Platform/User/Search/GlobalName/0", headers={"X-API-Key": dotenv.get_key(".env","BUNGIETOKEN")}, params={"displayNamePrefix":current})
   if r.ok:
@@ -135,7 +135,7 @@ async def sendBefore():
   await client.wait_until_ready()
 
 @updateStrigaStatus.before_loop
-async def sendBefore():
+async def strigaBefore():
   await client.wait_until_ready()
 
 # Start
